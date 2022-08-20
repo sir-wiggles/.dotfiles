@@ -1,9 +1,8 @@
 -- must be set before colorizer and mini.base16
 vim.api.nvim_set_option("termguicolors", true)
 
--- simple plugin setup
-require("lsp")
-require("colorizer").setup({})
+require("lsp").setup()
+require("colorizer").setup()
 require("mason").setup({})
 require("mason-lspconfig").setup({})
 require("mini.bufremove").setup({})
@@ -47,24 +46,9 @@ require("fzf-lua").setup({
 -- ===========================================
 -- ========== lualine configuration ==========
 -- ===========================================
--- Used with lualine to display the lsp server the buffer is currently using if any
-local function lsp_clients()
-    local buf_clients = vim.lsp.buf_get_clients()
-    if next(buf_clients) == nil then
-        return ""
-    end
-    local buf_client_names = {}
-    for _, client in pairs(buf_clients) do
-        if client.name ~= "null-ls" then
-            table.insert(buf_client_names, client.name)
-        end
-    end
-    return "歷" .. table.concat(buf_client_names, ", ")
-end
-
 require("lualine").setup({
     options = { theme = "gruvbox" },
-    sections = { lualine_c = { "filename", lsp_clients } }
+    sections = { lualine_c = { "filename", require('lsp').active } }
 })
 -- -------------------------------------------
 -- ===========================================
