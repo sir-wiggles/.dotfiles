@@ -4,6 +4,7 @@ call plug#begin('~/.config/nvim/plugged')
     "
     " pretty icons in vim, a must have
     Plug 'kyazdani42/nvim-web-devicons'                         " lua
+    Plug 'nvim-lualine/lualine.nvim'                            " lua
 
     Plug 'neovim/nvim-lspconfig'                                " lua
     Plug 'echasnovski/mini.nvim'                                " lua

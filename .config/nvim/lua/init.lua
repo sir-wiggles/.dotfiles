@@ -1,4 +1,4 @@
--- must be set before colorizer and mini.base16
+-- must be set before plugins that deal with colors
 vim.api.nvim_set_option("termguicolors", true)
 
 require("lsp").setup()
@@ -18,13 +18,14 @@ require("mini.tabline").setup({})
 -- ====== nvim-treesitter configuration ======
 -- ===========================================
 require("nvim-treesitter.configs").setup({
-    ensure_installed = { "python", "vim", "lua", "javascript" },
+    ensure_installed = { "python", "vim", "lua", "javascript", "go" },
     highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
     },
 })
 -- -------------------------------------------
+
 -- ===========================================
 -- ========== fzf-lua configuration ==========
 -- ===========================================
@@ -43,14 +44,7 @@ require("fzf-lua").setup({
     },
 })
 -- -------------------------------------------
--- ===========================================
--- ========== lualine configuration ==========
--- ===========================================
-require("lualine").setup({
-    options = { theme = "gruvbox" },
-    sections = { lualine_c = { "filename", require('lsp').active } }
-})
--- -------------------------------------------
+
 -- ===========================================
 -- ======== mini.base16 configuration ========
 -- ===========================================
@@ -98,3 +92,12 @@ require("mini.base16").setup({
     use_cterm = true,
 })
 -- -------------------------------------------
+
+-- ===========================================
+-- ========== lualine configuration ==========
+-- ===========================================
+-- this plugin must be called after mini.base16
+require("lualine").setup({
+    options = { theme = "gruvbox" },
+    sections = { lualine_c = { "filename", require('lsp').active } }
+})

@@ -3,28 +3,15 @@ local api = vim.api
 
 local exports = {}
 
--- Used with lualine to display the lsp server the buffer is currently using if any
-exports.active = function()
-    local buf_clients = vim.lsp.buf_get_clients()
-    if next(buf_clients) == nil then
-        return ""
-    end
-    local buf_client_names = {}
-    for _, client in pairs(buf_clients) do
-        if client.name ~= "null-ls" then
-            table.insert(buf_client_names, client.name)
-        end
-    end
-    return "歷" .. table.concat(buf_client_names, ", ")
-end
-
 -- ===========================================
 -- =========== lsp server settings ===========
 -- ===========================================
 local servers = {
     pyright = {
-        analysis = {
-            typeCheckingMode = "off",
+        settings = {
+            analysis = {
+                typeCheckingMode = "off",
+            },
         },
     },
     sumneko_lua = {
@@ -45,6 +32,9 @@ local servers = {
         },
     },
     vimls = {
+        settings = {}
+    },
+    gopls = {
         settings = {}
     },
 }
@@ -123,12 +113,27 @@ end
 
 -- -------------------------------------------
 
+-- Used with lualine to display the lsp server the buffer is currently using if any
+exports.active = function()
+    local buf_clients = vim.lsp.buf_get_clients()
+    if next(buf_clients) == nil then
+        return ""
+    end
+    local buf_client_names = {}
+    for _, client in pairs(buf_clients) do
+        if client.name ~= "null-ls" then
+            table.insert(buf_client_names, client.name)
+        end
+    end
+    return "歷" .. table.concat(buf_client_names, ", ")
+end
+
 -- ===========================================
 -- ============ lsp initialization ===========
 -- ===========================================
 exports.setup = function()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = true
+    capabilities.textDocument.completion.completionItem.snippetSupport = false
 
     handlers()
     local opts = {
@@ -146,4 +151,5 @@ exports.setup = function()
     end
 end
 -- -------------------------------------------
+
 return exports
