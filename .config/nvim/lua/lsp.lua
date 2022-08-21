@@ -101,7 +101,7 @@ local function on_attach(_, bufnr)
     keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
     keymap("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
     keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-    keymap("n", "gI", "<cmd>Telescope lsp_implementations<CR>", opts)
+    keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
     keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 
 end
@@ -118,6 +118,24 @@ local function omnifunc()
     keymap("i", "<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]], expr_opts)
     keymap("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], expr_opts)
 end
+
+-- handles imports for golang
+local function go_org_imports(wait_ms)
+    local params = vim.lsp.util.make_range_params()
+    params.context = { only = { "source.organizeImports" } }
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+    for cid, res in pairs(result or {}) do
+        for _, r in pairs(res.result or {}) do
+            if r.edit then
+                local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+                vim.lsp.util.apply_workspace_edit(r.edit, enc)
+            end
+        end
+    end
+end
+
+vim.cmd([[ autocmd BufWritePre *.go lua go_org_imports() ]])
+
 
 -- Used with lualine to display the lsp server the buffer is currently using if any
 exports.active = function()
