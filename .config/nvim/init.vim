@@ -19,9 +19,9 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
 
     " ========= experimental plugins ==========
-    " shows color codes as their color in realtime
-    Plug 'mhinz/vim-startify'                                   " vim
     Plug 'norcalli/nvim-colorizer.lua'                          " lua
+    Plug 'mhinz/vim-startify'                                   " vim
+    Plug 'lifepillar/vim-mucomplete'                            " vim
     " ========= experimental plugins ==========
 call plug#end()
 

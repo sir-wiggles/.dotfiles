@@ -85,9 +85,6 @@ local function handlers()
 end
 
 local function on_attach(_, bufnr)
-    api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.MiniCompletion.completefunc_lsp")
-    api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.MiniCompletion.completefunc_lsp")
-
     vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
 
     local opts = { noremap = true, silent = true }
@@ -98,7 +95,8 @@ local function on_attach(_, bufnr)
     keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
     keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
 
-    keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+    keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 
     keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
     keymap("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
@@ -106,24 +104,30 @@ local function on_attach(_, bufnr)
     keymap("n", "gI", "<cmd>Telescope lsp_implementations<CR>", opts)
     keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 
+end
+
+-- called outside of on_attach because I want this functionality on buffers without
+-- a LSP server.
+local function omnifunc()
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.MiniCompletion.completefunc_lsp")
+    api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.MiniCompletion.completefunc_lsp")
+
     local expr_opts = { noremap = true, expr = true }
     keymap("i", "<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]], expr_opts)
     keymap("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], expr_opts)
 end
 
--- -------------------------------------------
-
 -- Used with lualine to display the lsp server the buffer is currently using if any
 exports.active = function()
     local buf_clients = vim.lsp.buf_get_clients()
     if next(buf_clients) == nil then
-        return ""
+        return "轢"
     end
     local buf_client_names = {}
     for _, client in pairs(buf_clients) do
-        if client.name ~= "null-ls" then
-            table.insert(buf_client_names, client.name)
-        end
+        table.insert(buf_client_names, client.name)
     end
     return "歷" .. table.concat(buf_client_names, ", ")
 end
@@ -136,6 +140,8 @@ exports.setup = function()
     capabilities.textDocument.completion.completionItem.snippetSupport = false
 
     handlers()
+    omnifunc()
+
     local opts = {
         on_attach = on_attach,
         capabilities = capabilities,
