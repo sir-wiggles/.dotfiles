@@ -13,8 +13,8 @@ fi
 # ================= history ==================
 # ============================================
 # bind arrows keys to history search
-# bind '"\e[A": history-search-backward'
-# bind '"\e[B": history-search-forward'
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
 
 # ============================================
 # =================== fzf ====================
