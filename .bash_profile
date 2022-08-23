@@ -116,6 +116,10 @@ pyenvPS1() {
 export PROMPT_COMMAND="$PROMPT_COMMAND pyenvPS1;"
 
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 # VENV_VERSION=3.10.0rc1
 # function setup-venv {
 #     version="${1:-$VENV_VERSION}"

@@ -9,9 +9,13 @@ local exports = {}
 local servers = {
     pyright = {
         settings = {
-            analysis = {
-                typeCheckingMode = "off",
-            },
+            python = {
+                analysis = {
+                    autoSearchPaths = true,
+                    diagnosticMode = "workspace",
+                    useLibraryCodeForTypes = true
+                }
+            }
         },
     },
     sumneko_lua = {
