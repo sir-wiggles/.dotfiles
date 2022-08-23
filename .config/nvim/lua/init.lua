@@ -1,10 +1,68 @@
+require('packer').startup(function(use)
+    use { 'alexghergh/nvim-tmux-navigation', config = function()
+        local nvim_tmux_nav = require('nvim-tmux-navigation')
+        nvim_tmux_nav.setup {
+            disable_when_zoomed = false -- defaults to false
+        }
+
+        vim.keymap.set('n', "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
+        vim.keymap.set('n', "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
+        vim.keymap.set('n', "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
+        vim.keymap.set('n', "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
+        vim.keymap.set('n', "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
+        vim.keymap.set('n', "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+
+    end }
+
+    use 'kyazdani42/nvim-web-devicons'
+    use { 'nvim-lualine/lualine.nvim', config = function()
+        require("lualine").setup({
+            options = { theme = "gruvbox" },
+            sections = { lualine_c = { "filename", require('lsp').active } }
+        })
+    end }
+    use 'neovim/nvim-lspconfig'
+    use 'echasnovski/mini.nvim'
+    use { 'ibhagwan/fzf-lua', branch = 'main', config = function()
+        local actions = require("fzf-lua.actions")
+        require("fzf-lua").setup({
+            actions = {
+                files = {
+                    ["default"] = actions.file_edit,
+                    ["ctrl-s"]  = actions.file_split,
+                    ["ctrl-v"]  = actions.file_vsplit,
+                    ["ctrl-t"]  = actions.file_tabedit,
+                    ["alt-q"]   = actions.file_sel_to_qf,
+                },
+            },
+        })
+    end }
+    use 'kdheepak/lazygit.nvim'
+    use { 'williamboman/mason.nvim', config = function()
+        require("mason").setup({})
+    end }
+    use { 'williamboman/mason-lspconfig.nvim', config = function()
+        require("mason-lspconfig").setup({})
+    end }
+    use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', config = function()
+        require("nvim-treesitter.configs").setup({
+            ensure_installed = { "python", "vim", "lua", "javascript", "go" },
+            highlight = {
+                enable = true,
+                additional_vim_regex_highlighting = false,
+            },
+        })
+    end }
+    use { 'norcalli/nvim-colorizer.lua', config = function()
+        require("colorizer").setup()
+    end }
+end)
+
+
 -- must be set before plugins that deal with colors
 vim.api.nvim_set_option("termguicolors", true)
 
 require("lsp").setup()
-require("colorizer").setup()
-require("mason").setup({})
-require("mason-lspconfig").setup({})
 require("mini.bufremove").setup({})
 require("mini.comment").setup({})
 require("mini.completion").setup({})
@@ -14,35 +72,10 @@ require("mini.jump").setup({})
 require("mini.surround").setup({})
 require("mini.tabline").setup({})
 
+
 -- ===========================================
 -- ====== nvim-treesitter configuration ======
 -- ===========================================
-require("nvim-treesitter.configs").setup({
-    ensure_installed = { "python", "vim", "lua", "javascript", "go" },
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-    },
-})
--- -------------------------------------------
-
--- ===========================================
--- ========== fzf-lua configuration ==========
--- ===========================================
--- override the default action of sending selections to quickfix and just
--- edit the files.
-local actions = require("fzf-lua.actions")
-require("fzf-lua").setup({
-    actions = {
-        files = {
-            ["default"] = actions.file_edit,
-            ["ctrl-s"]  = actions.file_split,
-            ["ctrl-v"]  = actions.file_vsplit,
-            ["ctrl-t"]  = actions.file_tabedit,
-            ["alt-q"]   = actions.file_sel_to_qf,
-        },
-    },
-})
 -- -------------------------------------------
 
 -- ===========================================
@@ -92,12 +125,3 @@ require("mini.base16").setup({
     use_cterm = true,
 })
 -- -------------------------------------------
-
--- ===========================================
--- ========== lualine configuration ==========
--- ===========================================
--- this plugin must be called after mini.base16
-require("lualine").setup({
-    options = { theme = "gruvbox" },
-    sections = { lualine_c = { "filename", require('lsp').active } }
-})

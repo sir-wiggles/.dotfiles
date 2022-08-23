@@ -1,30 +1,3 @@
-call plug#begin('~/.config/nvim/plugged')
-    " seamless navigation when using vim in tmux
-    Plug 'alexghergh/nvim-tmux-navigation'                      " lua
-    "
-    " pretty icons in vim, a must have
-    Plug 'kyazdani42/nvim-web-devicons'                         " lua
-    Plug 'nvim-lualine/lualine.nvim'                            " lua
-
-    Plug 'neovim/nvim-lspconfig'                                " lua
-    Plug 'echasnovski/mini.nvim'                                " lua
-    Plug 'ibhagwan/fzf-lua', {'branch': 'main'}                 " lua
-    Plug 'kdheepak/lazygit.nvim'                                " lua
-
-    " manager of various lsp servers
-    Plug 'williamboman/mason.nvim'                              " lua
-    Plug 'williamboman/mason-lspconfig.nvim'                    " lua
-
-    " better syntax highlighting
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
-
-    " ========= experimental plugins ==========
-    Plug 'norcalli/nvim-colorizer.lua'                          " lua
-    Plug 'mhinz/vim-startify'                                   " vim
-    Plug 'lifepillar/vim-mucomplete'                            " vim
-    " ========= experimental plugins ==========
-call plug#end()
-
 " Setup all the Lua plugins
 lua require('init')
 
@@ -57,13 +30,6 @@ set wildmode=longest:full,full
 " ===========================================
 " =============== navigation ================
 " ===========================================
-" ------------------ tmux -------------------
-nnoremap <silent> <C-h>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLeft()<cr>
-nnoremap <silent> <C-j>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateDown()<cr>
-nnoremap <silent> <C-k>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateUp()<cr>
-nnoremap <silent> <C-l>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateRight()<cr>
-nnoremap <silent> <C-\>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLastActive()<cr>
-nnoremap <silent> <C-Space> :lua require('nvim-tmux-navigation').NvimTmuxNavigateNext()<cr>
 " ------------------ tab --------------------
 nnoremap <leader><c-h> :tabprevious<cr>
 nnoremap <leader><c-l> :tabnext<cr>
@@ -71,20 +37,6 @@ nnoremap <leader><c-l> :tabnext<cr>
 nnoremap <s-l> :bn<cr>
 nnoremap <s-h> :bp<cr>
 nnoremap <c-c> :bw<cr>
-" -------------------------------------------
-
-" ===========================================
-" ============== copy + paste ===============
-" ===========================================
-vnoremap <leader>y  "+y
-nnoremap <leader>Y  "+yg_
-nnoremap <leader>y  "+y
-nnoremap <leader>yy "+yy
-nnoremap <leader>ff :let @+ = expand("%")<cr>
-vnoremap <leader>p  "+p
-vnoremap <leader>P  "+P
-nnoremap <leader>p  "+p
-nnoremap <leader>P  "+P
 " -------------------------------------------
 
 " ===========================================
