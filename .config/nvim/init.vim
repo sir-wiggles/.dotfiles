@@ -31,6 +31,7 @@ lua require('init')
 " ===========================================
 " ================ options ==================
 " ===========================================
+set clipboard+=unnamedplus
 set cmdheight=1
 set colorcolumn=90
 set cursorline
