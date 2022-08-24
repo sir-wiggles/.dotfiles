@@ -1,6 +1,10 @@
+vim.cmd [[packadd packer.nvim]]
+
 require('packer').startup(function(use)
     vim.api.nvim_set_option("termguicolors", true)
     require("lsp").setup()
+
+    use 'wbthomason/packer.nvim'
 
     use { 'alexghergh/nvim-tmux-navigation', config = function()
         local nvim_tmux_nav = require('nvim-tmux-navigation')
@@ -122,4 +126,5 @@ require('packer').startup(function(use)
         palette = palettes["dark"],
         use_cterm = true,
     })
+
 end)
