@@ -3,9 +3,6 @@ local api = vim.api
 
 local exports = {}
 
--- ===========================================
--- =========== lsp server settings ===========
--- ===========================================
 local servers = {
     pyright = {
         settings = {
@@ -42,11 +39,7 @@ local servers = {
         settings = {}
     },
 }
--- -------------------------------------------
 
--- ===========================================
--- ================ lsp setup ================
--- ===========================================
 local function handlers()
     local diagnostics = { Error = " ", Hint = " ", Information = " ", Question = " ", Warning = " " }
     local signs = {
@@ -110,8 +103,6 @@ local function on_attach(_, bufnr)
 
 end
 
--- called outside of on_attach because I want this functionality on buffers without
--- a LSP server.
 local function omnifunc()
     local bufnr = vim.api.nvim_get_current_buf()
 
@@ -123,7 +114,6 @@ local function omnifunc()
     keymap("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], expr_opts)
 end
 
--- handles imports for golang
 function go_org_imports(wait_ms)
     local params = vim.lsp.util.make_range_params()
     params.context = { only = { "source.organizeImports" } }
@@ -140,8 +130,6 @@ end
 
 vim.cmd([[ autocmd BufWritePre *.go lua go_org_imports() ]])
 
-
--- Used with lualine to display the lsp server the buffer is currently using if any
 exports.active = function()
     local buf_clients = vim.lsp.buf_get_clients()
     if next(buf_clients) == nil then
@@ -154,9 +142,6 @@ exports.active = function()
     return "歷" .. table.concat(buf_client_names, ", ")
 end
 
--- ===========================================
--- ============ lsp initialization ===========
--- ===========================================
 exports.setup = function()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = false
@@ -178,6 +163,5 @@ exports.setup = function()
         lspconfig[server_name].setup(extended_opts)
     end
 end
--- -------------------------------------------
 
 return exports

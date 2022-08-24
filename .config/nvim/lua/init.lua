@@ -1,4 +1,5 @@
 require('packer').startup(function(use)
+    vim.api.nvim_set_option("termguicolors", true)
     require("lsp").setup()
 
     use { 'alexghergh/nvim-tmux-navigation', config = function()
@@ -13,13 +14,11 @@ require('packer').startup(function(use)
         vim.keymap.set('n', "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
         vim.keymap.set('n', "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
         vim.keymap.set('n', "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
-
     end }
 
     use 'kyazdani42/nvim-web-devicons'
 
     use { 'nvim-lualine/lualine.nvim', config = function()
-        vim.api.nvim_set_option("termguicolors", true)
         require("lualine").setup({
             options = { theme = "gruvbox" },
             sections = { lualine_c = { "filename", require('lsp').active } }
@@ -64,13 +63,11 @@ require('packer').startup(function(use)
     end }
 
     use { 'norcalli/nvim-colorizer.lua', config = function()
-        vim.api.nvim_set_option("termguicolors", true)
         require("colorizer").setup()
     end }
 
 
     use { 'echasnovski/mini.nvim', branch = 'stable', config = function()
-        vim.api.nvim_set_option("termguicolors", true)
         require("mini.bufremove").setup({})
         require("mini.comment").setup({})
         require("mini.completion").setup({})
