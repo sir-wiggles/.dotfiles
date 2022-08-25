@@ -2,11 +2,24 @@
 
 sudo apt update
 sudo apt upgrade -y
-sudo apt install make curl git tmux neovim jump ripgrep
+sudo apt install -y make curl git tmux neovim jump ripgrep bat tree
+
+# =================== neovim ====================
+pushd /tmp
+curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-linux64.deb
+sudo apt install nvim-linux64.deb
+popd
+
+# =================== vim-plug ==================
+pushd /tmp
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+nvim +PlugInstall +qa
+popd
 
 # ==================== kitty ====================
 pushd /tmp
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
 ln -s ~/.local/kitty.app/bin/kitty ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
@@ -23,7 +36,7 @@ popd
 # ===================== rg ======================
 pushd /tmp
 curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
-sudo dpkg -i ripgrep_13.0.0_amd64.deb
+sudo apt install ripgrep_13.0.0_amd64.deb
 popd
 
 # ===================== go ======================
@@ -35,12 +48,13 @@ popd
 
 # ==================== pyenv ====================
 pushd /tmp
-git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-cd ~/.pyenv && src/configure && make -C src
+curl https://pyenv.run | bash
+source ~/.bashrc
 popd
 
 # ===================== nvm =====================
 pushd /tmp
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+source ~/.bashrc
 nvm install v16.14.0
 popd
