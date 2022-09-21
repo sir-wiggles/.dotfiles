@@ -77,7 +77,7 @@ export EDITOR=nvim
 export SHELL=/bin/bash
 
 export PATH=$HOME/.local/bin:$PATH
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin:~/go/bin
 export PATH=$PATH:/usr/local/libressl/bin
 export PATH=$PATH:/usr/local/nvim-linux64/bin
 
