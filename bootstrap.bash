@@ -2,19 +2,12 @@
 
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y make curl git tmux neovim jump ripgrep bat tree
+sudo apt install -y make curl git tmux bat tree stow
 
 # =================== neovim ====================
 pushd /tmp
 curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-linux64.deb
-sudo apt install nvim-linux64.deb
-popd
-
-# =================== vim-plug ==================
-pushd /tmp
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-nvim +PlugInstall +qa
+sudo apt install ./nvim-linux64.deb
 popd
 
 # ==================== kitty ====================
@@ -30,13 +23,13 @@ popd
 # ===================== fzf =====================
 pushd /tmp
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+yes | ~/.fzf/install
 popd
 
 # ===================== rg ======================
 pushd /tmp
 curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
-sudo apt install ripgrep_13.0.0_amd64.deb
+sudo apt install ./ripgrep_13.0.0_amd64.deb
 popd
 
 # ===================== go ======================
@@ -58,3 +51,9 @@ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 source ~/.bashrc
 nvm install v16.14.0
 popd
+
+# ==================== jump =====================
+go install github.com/gsamokovarov/jump@latest
+
+# ===================== tpm =====================
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
