@@ -125,24 +125,3 @@ nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
 nnoremap <silent> <leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
 
 
-function DebugMapping()
-    nnoremap <silent> c <Cmd>lua require'dap'.continue()<CR>
-    nnoremap <silent> n <Cmd>lua require'dap'.step_over()<CR>
-    nnoremap <silent> s <Cmd>lua require'dap'.step_into()<CR>
-    nnoremap <silent> o <Cmd>lua require'dap'.step_out()<CR>
-    nnoremap <silent> u <Cmd>lua require'dap'.up()<CR>
-    nnoremap <silent> d <Cmd>lua require'dap'.down()<CR>
-    nnoremap <silent> b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-    nnoremap <silent> r <Cmd>lua require'dap'.repl.open()<CR>
-endfunction
-
-function DebugMappingUndo()
-    nunmap c
-    nunmap n
-    nunmap s
-    nunmap o
-    nunmap u
-    nunmap d
-    nunmap b
-    nunmap r
-endfunction
