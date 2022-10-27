@@ -38,6 +38,9 @@ local servers = {
     gopls = {
         settings = {}
     },
+    tsserver = {
+        settings = {}
+    }
 }
 
 local function handlers()

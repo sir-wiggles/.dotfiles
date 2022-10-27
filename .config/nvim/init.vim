@@ -1,6 +1,6 @@
 call plug#begin('~/.config/nvim/plugged')
     Plug 'mfussenegger/nvim-dap'
-    Plug 'rcarriga/nvim-dap-ui'
+"    Plug 'rcarriga/nvim-dap-ui'
     " seamless navigation when using vim in tmux
     Plug 'alexghergh/nvim-tmux-navigation'                      " lua
     "
@@ -121,14 +121,28 @@ augroup end
 autocmd BufWritePre * :%s/\s\+$//e
 " -------------------------------------------
 
-
-
 nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
-nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
-nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
-nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
-nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-nnoremap <silent> <Leader>B <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-nnoremap <silent> <Leader>lp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
-nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>
-nnoremap <silent> <Leader>dl <Cmd>lua require'dap'.run_last()<CR>
+nnoremap <silent> <leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+
+
+function DebugMapping()
+    nnoremap <silent> c <Cmd>lua require'dap'.continue()<CR>
+    nnoremap <silent> n <Cmd>lua require'dap'.step_over()<CR>
+    nnoremap <silent> s <Cmd>lua require'dap'.step_into()<CR>
+    nnoremap <silent> o <Cmd>lua require'dap'.step_out()<CR>
+    nnoremap <silent> u <Cmd>lua require'dap'.up()<CR>
+    nnoremap <silent> d <Cmd>lua require'dap'.down()<CR>
+    nnoremap <silent> b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+    nnoremap <silent> r <Cmd>lua require'dap'.repl.open()<CR>
+endfunction
+
+function DebugMappingUndo()
+    nunmap c
+    nunmap n
+    nunmap s
+    nunmap o
+    nunmap u
+    nunmap d
+    nunmap b
+    nunmap r
+endfunction

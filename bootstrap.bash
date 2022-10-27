@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y make curl git tmux bat tree stow
+sudo apt install -y make curl git tmux bat tree stow gnome-tweaks clang g++ xsel
 
 # =================== neovim ====================
 pushd /tmp
