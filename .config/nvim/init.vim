@@ -1,6 +1,4 @@
 call plug#begin('~/.config/nvim/plugged')
-    Plug 'mfussenegger/nvim-dap'
-"    Plug 'rcarriga/nvim-dap-ui'
     " seamless navigation when using vim in tmux
     Plug 'alexghergh/nvim-tmux-navigation'                      " lua
     "
@@ -10,7 +8,10 @@ call plug#begin('~/.config/nvim/plugged')
 
     Plug 'neovim/nvim-lspconfig'                                " lua
     Plug 'echasnovski/mini.nvim'                                " lua
-    Plug 'ibhagwan/fzf-lua', {'branch': 'main'}                 " lua
+
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }         " vim
+    Plug 'junegunn/fzf.vim'                                     " vim
+
     Plug 'kdheepak/lazygit.nvim'                                " lua
 
     " manager of various lsp servers
@@ -25,8 +26,14 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'mhinz/vim-startify'                                   " vim
     "Plug 'lifepillar/vim-mucomplete'                            " vim
 
+    Plug 'mfussenegger/nvim-dap'
+    Plug 'rcarriga/nvim-dap-ui'
+
     " ========= experimental plugins ==========
 call plug#end()
+
+" leader key must be set before loading init.lua
+let mapleader = ','
 
 " Setup all the Lua plugins
 lua require('init')
@@ -90,11 +97,7 @@ nnoremap <leader>p  "+p
 nnoremap <leader>P  "+P
 " -------------------------------------------
 
-" ===========================================
-" ============= =============== =============
-" ===========================================
 " --------------- variables -----------------
-let mapleader = ','
 let g:startify_fortune_use_unicode=1
 " ---------------- i-remaps -----------------
 inoremap jk <esc>
@@ -102,16 +105,16 @@ inoremap JK <esc>
 " ---------------- n-remaps -----------------
 nnoremap <leader>h :setlocal spell! spelllang=en_us<cr>
 nnoremap <c-w> :nohlsearch<cr>
-nnoremap <c-p> <cmd>lua require('fzf-lua').files()<cr>
+nnoremap <c-p> :Files<cr>
 " resize buffers relative to others in the vim session
 nnoremap <s-left>  :vertical resize -5<cr>
 nnoremap <s-right> :vertical resize +5<cr>
 nnoremap <s-down>  :resize          +5<cr>
 nnoremap <s-up>    :resize          -5<cr>
 " ---------------- commands -----------------
-command! Grep lua require('fzf-lua').grep()
-command! Git  :LazyGit
-
+command! Grep  lua require('fzf-lua').grep()
+command! Git   :LazyGit
+command! Debug lua require("dap").continue()
 " ---------------- autocmds -----------------
 " highlight the yanked text for a short period of time
 augroup YankHighlight
@@ -119,30 +122,8 @@ augroup YankHighlight
 augroup end
 " strip trailing white space at the end of lines
 autocmd BufWritePre * :%s/\s\+$//e
+" ---------------- highlight ----------------
+highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
+highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
 " -------------------------------------------
 
-nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
-nnoremap <silent> <leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-
-
-function DebugMapping()
-    nnoremap <silent> c <Cmd>lua require'dap'.continue()<CR>
-    nnoremap <silent> n <Cmd>lua require'dap'.step_over()<CR>
-    nnoremap <silent> s <Cmd>lua require'dap'.step_into()<CR>
-    nnoremap <silent> o <Cmd>lua require'dap'.step_out()<CR>
-    nnoremap <silent> u <Cmd>lua require'dap'.up()<CR>
-    nnoremap <silent> d <Cmd>lua require'dap'.down()<CR>
-    nnoremap <silent> b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-    nnoremap <silent> r <Cmd>lua require'dap'.repl.open()<CR>
-endfunction
-
-function DebugMappingUndo()
-    nunmap c
-    nunmap n
-    nunmap s
-    nunmap o
-    nunmap u
-    nunmap d
-    nunmap b
-    nunmap r
-endfunction
