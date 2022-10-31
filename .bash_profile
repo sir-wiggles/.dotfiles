@@ -101,8 +101,6 @@ else
 fi
 # ============================================
 # ============================================
-set -o vi
-
 alias vim=nvim
 
 export VISUAL=nvim
@@ -179,8 +177,7 @@ _gb() {
   git branch -a --color=always | grep -v '/HEAD\s' | sort |
   fzf-down --ansi --multi --tac --preview-window right:70% \
     --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s"'
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
+  sed 's/^..//' | cut -d' ' -f1
 }
 
 if [[ $- =~ i ]]; then
@@ -192,3 +189,4 @@ if [[ $- =~ i ]]; then
   #bind '"\C-g\C-r": "$(_gr)\e\C-e\er"'
   #bind '"\C-g\C-s": "$(_gs)\e\C-e\er"'
 fi
+
