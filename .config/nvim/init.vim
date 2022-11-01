@@ -24,7 +24,6 @@ call plug#begin('~/.config/nvim/plugged')
     " ========= experimental plugins ==========
     Plug 'norcalli/nvim-colorizer.lua'                          " lua
     Plug 'mhinz/vim-startify'                                   " vim
-    "Plug 'lifepillar/vim-mucomplete'                            " vim
 
     Plug 'mfussenegger/nvim-dap'
     Plug 'rcarriga/nvim-dap-ui'
