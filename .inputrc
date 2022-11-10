@@ -1,13 +1,13 @@
-set show-mode-in-prompt on
+# set show-mode-in-prompt on
+#
+# set vi-ins-mode-string "custom-ins"
+# set vi-cmd-mode-string "custom-cmd"
+#
+# set editing-mode vi
+# set show-mode-in-prompt on
+# set vi-ins-mode-string \1\e[6 q\2
+# set vi-cmd-mode-string \1\e[2 q\2
 
-set vi-ins-mode-string "custom-ins"
-set vi-cmd-mode-string "custom-cmd"
 
-set editing-mode vi
-set show-mode-in-prompt on
-set vi-ins-mode-string \1\e[6 q\2
-set vi-cmd-mode-string \1\e[2 q\2
-
-
-set colored-stats on
-set colored-completion-prefix on
+# set colored-stats on
+# set colored-completion-prefix on

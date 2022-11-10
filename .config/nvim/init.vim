@@ -30,7 +30,7 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'mfussenegger/nvim-dap'                                " lua
         Plug 'rcarriga/nvim-dap-ui'                                 " lua
         Plug 'rhysd/git-messenger.vim'
-        Plug 'f-person/git-blame.nvim'
+        Plug 'APZelos/blamer.nvim'
 call plug#end()
 
 " leader key must be set before loading init.lua
@@ -91,6 +91,8 @@ nnoremap <leader>P  "+P
 " --------------- variables -----------------
 let g:startify_fortune_use_unicode=1
 let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
+
+let g:blamer_enabled = 1
 " ---------------- i-remaps -----------------
 inoremap jk <esc>
 inoremap JK <esc>
