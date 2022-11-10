@@ -1,34 +1,36 @@
 call plug#begin('~/.config/nvim/plugged')
-    " seamless navigation when using vim in tmux
-    Plug 'alexghergh/nvim-tmux-navigation'                      " lua
-    "
-    " pretty icons in vim, a must have
-    Plug 'kyazdani42/nvim-web-devicons'                         " lua
-    Plug 'nvim-lualine/lualine.nvim'                            " lua
+    " === Helpful plugins
+        " seamless navigation when using vim in tmux
+        Plug 'alexghergh/nvim-tmux-navigation'                      " lua
+        Plug 'echasnovski/mini.nvim'                                " lua
+        Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }         " vim
+        Plug 'junegunn/fzf.vim'                                     " vim
+        Plug 'kdheepak/lazygit.nvim'                                " lua
+        Plug 'mhinz/vim-startify'                                   " vim
 
-    Plug 'neovim/nvim-lspconfig'                                " lua
-    Plug 'echasnovski/mini.nvim'                                " lua
+    " === Stat display
+        " pretty icons in vim, a must have
+        Plug 'kyazdani42/nvim-web-devicons'                         " lua
+        " file stats
+        Plug 'nvim-lualine/lualine.nvim'                            " lua
 
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }         " vim
-    Plug 'junegunn/fzf.vim'                                     " vim
+    " === LSPs ===
+        Plug 'neovim/nvim-lspconfig'                                " lua
+        " manager of various lsp servers
+        Plug 'williamboman/mason-lspconfig.nvim'                    " lua
+        Plug 'williamboman/mason.nvim'                              " lua
 
-    Plug 'kdheepak/lazygit.nvim'                                " lua
+    " === Coloring
+        " color codes to actual colors in vim
+        Plug 'norcalli/nvim-colorizer.lua'                          " lua
+        " better syntax highlighting
+        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
 
-    " manager of various lsp servers
-    Plug 'williamboman/mason.nvim'                              " lua
-    Plug 'williamboman/mason-lspconfig.nvim'                    " lua
-
-    " better syntax highlighting
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
-
-    " ========= experimental plugins ==========
-    Plug 'norcalli/nvim-colorizer.lua'                          " lua
-    Plug 'mhinz/vim-startify'                                   " vim
-
-    Plug 'mfussenegger/nvim-dap'
-    Plug 'rcarriga/nvim-dap-ui'
-
-    " ========= experimental plugins ==========
+    " === xplugs
+        Plug 'mfussenegger/nvim-dap'                                " lua
+        Plug 'rcarriga/nvim-dap-ui'                                 " lua
+        Plug 'rhysd/git-messenger.vim'
+        Plug 'f-person/git-blame.nvim'
 call plug#end()
 
 " leader key must be set before loading init.lua
@@ -37,9 +39,7 @@ let mapleader = ','
 " Setup all the Lua plugins
 lua require('init')
 
-" ===========================================
-" ================ options ==================
-" ===========================================
+" ---------------- options ------------------
 set clipboard+=unnamedplus
 set cmdheight=1
 set colorcolumn=90
@@ -63,9 +63,7 @@ set wildmenu
 set wildmode=longest:full,full
 " -------------------------------------------
 
-" ===========================================
 " =============== navigation ================
-" ===========================================
 " ------------------ tmux -------------------
 nnoremap <silent> <C-h>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLeft()<cr>
 nnoremap <silent> <C-j>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateDown()<cr>
@@ -80,11 +78,7 @@ nnoremap <leader><c-l> :tabnext<cr>
 nnoremap <s-l> :bn<cr>
 nnoremap <s-h> :bp<cr>
 nnoremap <c-c> :bw<cr>
-" -------------------------------------------
-
-" ===========================================
-" ============== copy + paste ===============
-" ===========================================
+" -------------- copy + paste ---------------
 vnoremap <leader>y  "+y
 nnoremap <leader>Y  "+yg_
 nnoremap <leader>y  "+y
@@ -94,10 +88,9 @@ vnoremap <leader>p  "+p
 vnoremap <leader>P  "+P
 nnoremap <leader>p  "+p
 nnoremap <leader>P  "+P
-" -------------------------------------------
-
 " --------------- variables -----------------
 let g:startify_fortune_use_unicode=1
+let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
 " ---------------- i-remaps -----------------
 inoremap jk <esc>
 inoremap JK <esc>
@@ -111,7 +104,6 @@ nnoremap <s-right> :vertical resize +5<cr>
 nnoremap <s-down>  :resize          +5<cr>
 nnoremap <s-up>    :resize          -5<cr>
 " ---------------- commands -----------------
-command! Grep  lua require('fzf-lua').grep()
 command! Git   :LazyGit
 command! Debug lua require("dap").continue()
 " ---------------- autocmds -----------------
@@ -125,4 +117,3 @@ autocmd BufWritePre * :%s/\s\+$//e
 highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
 highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
 " -------------------------------------------
-

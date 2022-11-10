@@ -2,6 +2,11 @@ if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
+set colored-stats on
+bind "TAB:menu-complete"
+bind "set show-all-if-ambiguous on"
+bind "set menu-complete-display-prefix on"
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -11,6 +16,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias vim=nvim
+alias tree='tree -I node_modules'
 
 cG='\[\033[1;32m\]'
 cO='\[\033[0;33m\]'
@@ -50,18 +56,20 @@ fi
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
+export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
+alias pip="$PYENV_ROOT/shims/pip"
 pathadd $PYENV_ROOT/bin
-if [[ "$PYENV_EVAL" -eq 0 ]]; then
-    export PYENV_EVAL=1
-    eval "$(pyenv init --path --no-rehash)"
-fi
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
 if [[ "$NVM_EVAL" -eq 0 ]]; then
     NVM_EVAL=1
-    source "$NVM_DIR/nvm.sh"  # This loads nvm
-    source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"
+    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
+
 fi
 
 # ssh agent setup
@@ -98,3 +106,9 @@ fd() {
   preview="git diff $@ --color=always -- {-1}"
   git diff $@ --name-only | fzf -m --ansi --preview $preview
 }
+export PATH="/usr/local/opt/binutils/bin:$PATH"
+
+# if [ -f "$HOME/.bash-git-prompt/gitprompt.sh" ]; then
+#     GIT_PROMPT_ONLY_IN_REPO=1
+#     source $HOME/.bash-git-prompt/gitprompt.sh
+# fi
