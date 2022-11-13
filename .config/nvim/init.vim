@@ -26,9 +26,14 @@ call plug#begin('~/.config/nvim/plugged')
         " better syntax highlighting
         Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
 
-    " === xplugs
+    " === Debugging
         Plug 'mfussenegger/nvim-dap'                                " lua
         Plug 'rcarriga/nvim-dap-ui'                                 " lua
+        Plug 'mxsdev/nvim-dap-vscode-js'
+        Plug 'Weissle/persistent-breakpoints.nvim'
+
+    " === xplugs
+
         Plug 'rhysd/git-messenger.vim'
         Plug 'APZelos/blamer.nvim'
 call plug#end()
@@ -107,7 +112,7 @@ nnoremap <s-down>  :resize          +5<cr>
 nnoremap <s-up>    :resize          -5<cr>
 " ---------------- commands -----------------
 command! Git   :LazyGit
-command! Debug lua require("dap").continue()
+command! Debug lua require("dap").continue(); require("dapui").open()
 " ---------------- autocmds -----------------
 " highlight the yanked text for a short period of time
 augroup YankHighlight
@@ -119,3 +124,7 @@ autocmd BufWritePre * :%s/\s\+$//e
 highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
 highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
 " -------------------------------------------
+
+augroup daprepl
+  autocmd FileType dap-repl set nobuflisted
+augroup end

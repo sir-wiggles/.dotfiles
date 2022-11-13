@@ -1,12 +1,3 @@
-if [ -f ~/.bashrc ]; then
-    source ~/.bashrc
-fi
-
-# set colored-stats on
-bind "TAB:menu-complete"
-bind "set show-all-if-ambiguous on"
-bind "set menu-complete-display-prefix on"
-
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -18,11 +9,6 @@ alias l='ls -CF'
 alias vim=nvim
 alias tree='tree -I node_modules'
 
-cG='\[\033[1;32m\]'
-cO='\[\033[0;33m\]'
-cD='\[\033[0m\]'
-
-export PS1="${cG}\u${cD}@${cG}\h${cD}:${cO}\w${cD}\$ "
 export BASH_SILENCE_DEPRECATION_WARNING=1
 export EDITOR=nvim
 export MANPAGER='nvim +Man!'
@@ -30,109 +16,95 @@ export MANWIDTH=120
 export SHELL=/bin/bash
 export VISUAL=nvim
 export PYTHONDONTWRITEBYTECODE=1
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git" --glob "!snap/*"'
 
-pathadd() {
-    if [[ ! "$PATH" =~ (^|:)"${1}"(:|$) ]]; then
-        export PATH=${1}:$PATH
-    fi
-}
 
-# kitty
-if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then
-    source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash";
-fi
-
-# history
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
-# fzf
-export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git" --glob "!snap/*"'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_DEFAULT_OPTS=' --height 35% '
-if [ -f ~/.fzf.bash ]; then
-    source ~/.fzf.bash
-fi
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
-alias pip="$PYENV_ROOT/shims/pip"
-pathadd $PYENV_ROOT/bin
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-if [[ "$NVM_EVAL" -eq 0 ]]; then
-    NVM_EVAL=1
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"
-    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
+# If not running interactively, don't do anything
+case $- in
+  *i*) ;;
+    *) return;;
+esac
 
-fi
+# Path to the bash it configuration
+export BASH_IT="/Users/jeffor/.bash_it"
 
-# ssh agent setup
-SSH_ENV="$HOME/.ssh/env"
-function start_agent {
-    echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-    echo succeeded
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" > /dev/null
-    /usr/bin/ssh-add;
-}
+# Lock and Load a custom theme file.
+# Leave empty to disable theming.
+# location /.bash_it/themes/
+export BASH_IT_THEME='parrot'
 
-# Source SSH settings, if applicable
-if [ -f "${SSH_ENV}" ]; then
-    . "${SSH_ENV}" > /dev/null
-    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-        start_agent;
-    }
-else
-    start_agent;
-fi
+# Some themes can show whether `sudo` has a current token or not.
+# Set `$THEME_CHECK_SUDO` to `true` to check every prompt:
+#THEME_CHECK_SUDO='true'
 
-# golang
-pathadd $HOME/.local/bin
-pathadd /usr/local/go/bin:~/go/bin
+# (Advanced): Change this to the name of your remote repo if you
+# cloned bash-it with a remote other than origin such as `bash-it`.
+# export BASH_IT_REMOTE='bash-it'
 
-# jump
-eval "$(jump shell)"
+# (Advanced): Change this to the name of the main development branch if
+# you renamed it or if it was changed for some reason
+# export BASH_IT_DEVELOPMENT_BRANCH='master'
 
-if [ -f "$HOME/.bash-git-prompt/gitprompt.sh" ]; then
-    # Set config variables first
-    GIT_PROMPT_ONLY_IN_REPO=1
-    # GIT_PROMPT_FETCH_REMOTE_STATUS=0   # uncomment to avoid fetching remote status
-    # GIT_PROMPT_IGNORE_SUBMODULES=1 # uncomment to avoid searching for changed files in submodules
-    # GIT_PROMPT_WITH_VIRTUAL_ENV=0 # uncomment to avoid setting virtual environment infos for node/python/conda environments
-    # GIT_PROMPT_VIRTUAL_ENV_AFTER_PROMPT=1 # uncomment to place virtual environment infos between prompt and git status (instead of left to the prompt)
+# Your place for hosting Git repos. I use this for private repos.
+export GIT_HOSTING='git@git.domain.com'
 
-    # GIT_PROMPT_SHOW_UPSTREAM=1 # uncomment to show upstream tracking branch
-    # GIT_PROMPT_SHOW_UNTRACKED_FILES=normal # can be no, normal or all; determines counting of untracked files
+# Don't check mail when opening terminal.
+unset MAILCHECK
 
-    # GIT_PROMPT_SHOW_CHANGED_FILES_COUNT=0 # uncomment to avoid printing the number of changed files
+# Change this to your console based IRC client of choice.
+export IRC_CLIENT='irssi'
 
-    # GIT_PROMPT_STATUS_COMMAND=gitstatus_pre-1.7.10.sh # uncomment to support Git older than 1.7.10
+# Set this to the command you use for todo.txt-cli
+export TODO="t"
 
-    # GIT_PROMPT_START=...    # uncomment for custom prompt start sequence
-    # GIT_PROMPT_END=...      # uncomment for custom prompt end sequence
+# Set this to the location of your work or project folders
+#BASH_IT_PROJECT_PATHS="${HOME}/Projects:/Volumes/work/src"
 
-    # as last entry source the gitprompt script
-    GIT_PROMPT_THEME=Solarized # use custom theme specified in file GIT_PROMPT_THEME_FILE (default ~/.git-prompt-colors.sh)
-    #  GIT_PROMPT_THEME_FILE=~/.git-prompt-colors.sh
-    # # GIT_PROMPT_THEME=Solarized # use theme optimized for solarized color scheme
-    source ~/.bash-git-prompt/gitprompt.sh
-fi
+# Set this to false to turn off version control status checking within the prompt for all themes
+export SCM_CHECK=true
+# Set to actual location of gitstatus directory if installed
+#export SCM_GIT_GITSTATUS_DIR="$HOME/gitstatus"
+# per default gitstatus uses 2 times as many threads as CPU cores, you can change this here if you must
+#export GITSTATUS_NUM_THREADS=8
 
-if [ -f ~/.git-completion.bash ]; then
-    # curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
-  . ~/.git-completion.bash
-fi
+# Set Xterm/screen/Tmux title with only a short hostname.
+# Uncomment this (or set SHORT_HOSTNAME to something else),
+# Will otherwise fall back on $HOSTNAME.
+#export SHORT_HOSTNAME=$(hostname -s)
 
-fd() {
-  preview="git diff $@ --color=always -- {-1}"
-  git diff $@ --name-only | fzf -m --ansi --preview $preview
-}
-export PATH="/usr/local/opt/binutils/bin:$PATH"
+# Set Xterm/screen/Tmux title with only a short username.
+# Uncomment this (or set SHORT_USER to something else),
+# Will otherwise fall back on $USER.
+#export SHORT_USER=${USER:0:8}
 
+# If your theme use command duration, uncomment this to
+# enable display of last command duration.
+#export BASH_IT_COMMAND_DURATION=true
+# You can choose the minimum time in seconds before
+# command duration is displayed.
+#export COMMAND_DURATION_MIN_SECONDS=1
+
+# Set Xterm/screen/Tmux title with shortened command and directory.
+# Uncomment this to set.
+#export SHORT_TERM_LINE=true
+
+# Set vcprompt executable path for scm advance info in prompt (demula theme)
+# https://github.com/djl/vcprompt
+#export VCPROMPT_EXECUTABLE=~/.vcprompt/bin/vcprompt
+
+# (Advanced): Uncomment this to make Bash-it reload itself automatically
+# after enabling or disabling aliases, plugins, and completions.
+# export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
+
+# Uncomment this to make Bash-it create alias reload.
+# export BASH_IT_RELOAD_LEGACY=1
+
+# Load Bash It
+source "$BASH_IT"/bash_it.sh
+
+export PROMPT_COMMAND="${PROMPT_COMMAND/_pyenv_virtualenv_hook;/}"
