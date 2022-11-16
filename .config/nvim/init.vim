@@ -3,15 +3,10 @@ call plug#begin('~/.config/nvim/plugged')
         " seamless navigation when using vim in tmux
         Plug 'alexghergh/nvim-tmux-navigation'                      " lua
         Plug 'echasnovski/mini.nvim'                                " lua
-        Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }         " vim
-        Plug 'junegunn/fzf.vim'                                     " vim
         Plug 'kdheepak/lazygit.nvim'                                " lua
         Plug 'mhinz/vim-startify'                                   " vim
 
     " === Stat display
-        " pretty icons in vim, a must have
-        Plug 'kyazdani42/nvim-web-devicons'                         " lua
-        " file stats
         Plug 'nvim-lualine/lualine.nvim'                            " lua
 
     " === LSPs ===
@@ -23,19 +18,38 @@ call plug#begin('~/.config/nvim/plugged')
     " === Coloring
         " color codes to actual colors in vim
         Plug 'norcalli/nvim-colorizer.lua'                          " lua
-        " better syntax highlighting
         Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
+
+    " === Telescope
+        Plug 'nvim-lua/plenary.nvim'                                " lua
+        Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }    " lua
+        Plug 'sharkdp/fd'                                           " lua
+        Plug 'nvim-tree/nvim-web-devicons'                          " lua
+
+    " === Autocompletion + Snippets
+        Plug 'hrsh7th/nvim-cmp'                                     " lua
+        Plug 'hrsh7th/cmp-buffer'                                   " lua
+        Plug 'hrsh7th/cmp-path'                                     " lua
+        Plug 'saadparwaiz1/cmp_luasnip'                             " lua
+        Plug 'hrsh7th/cmp-nvim-lsp'                                 " lua
+        Plug 'L3MON4D3/LuaSnip'                                     " lua
+        Plug 'rafamadriz/friendly-snippets'                         " lua
+
+        " bracket auto closer
+        Plug 'rstacruz/vim-closer'                                  " vim
 
     " === Debugging
         Plug 'mfussenegger/nvim-dap'                                " lua
         Plug 'rcarriga/nvim-dap-ui'                                 " lua
-        Plug 'mxsdev/nvim-dap-vscode-js'
-        Plug 'Weissle/persistent-breakpoints.nvim'
+        Plug 'mxsdev/nvim-dap-vscode-js'                            " lua
+        Plug 'Weissle/persistent-breakpoints.nvim'                  " lua
 
     " === xplugs
-
         Plug 'rhysd/git-messenger.vim'
         Plug 'APZelos/blamer.nvim'
+        Plug 'chriskempson/base16-vim'
+        Plug 'BurntSushi/ripgrep'
+
 call plug#end()
 
 " leader key must be set before loading init.lua
@@ -43,6 +57,9 @@ let mapleader = ','
 
 " Setup all the Lua plugins
 lua require('init')
+
+let base16colorspace=256
+colorscheme base16-ia-dark
 
 " ---------------- options ------------------
 set clipboard+=unnamedplus
@@ -104,7 +121,7 @@ inoremap JK <esc>
 " ---------------- n-remaps -----------------
 nnoremap <leader>h :setlocal spell! spelllang=en_us<cr>
 nnoremap <c-w> :nohlsearch<cr>
-nnoremap <c-p> :Files<cr>
+nnoremap <c-p> :Telescope fd<cr>
 " resize buffers relative to others in the vim session
 nnoremap <s-left>  :vertical resize -5<cr>
 nnoremap <s-right> :vertical resize +5<cr>
@@ -112,19 +129,29 @@ nnoremap <s-down>  :resize          +5<cr>
 nnoremap <s-up>    :resize          -5<cr>
 " ---------------- commands -----------------
 command! Git   :LazyGit
+command! Grep  :Telescope live_grep
 command! Debug lua require("dap").continue(); require("dapui").open()
+command! Vimrc :e ~/.config/nvim/init.vim
+command! Luarc :e ~/.config/nvim/lua/init.lua
+command! Cmprc :e ~/.config/nvim/lua/cmp-conf.lua
+command! Daprc :e ~/.config/nvim/lua/dap-conf.lua
+command! Lsprc :e ~/.config/nvim/lua/lsp-conf.lua
+command! Source :source ~/.config/nvim/init.vim
 " ---------------- autocmds -----------------
 " highlight the yanked text for a short period of time
 augroup YankHighlight
     autocmd! TextYankPost * silent! lua vim.highlight.on_yank({timeout=400})
 augroup end
+
 " strip trailing white space at the end of lines
 autocmd BufWritePre * :%s/\s\+$//e
-" ---------------- highlight ----------------
-highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
-highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
-" -------------------------------------------
 
 augroup daprepl
   autocmd FileType dap-repl set nobuflisted
 augroup end
+" ---------------- highlight ----------------
+highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
+highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
+highlight FloatBorder  ctermfg=NONE ctermbg=NONE cterm=NONE
+" -------------------------------------------
+

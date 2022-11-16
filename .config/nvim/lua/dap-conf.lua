@@ -1,7 +1,17 @@
 local dap = require('dap')
+local dapui = require('dapui')
+local pbp = require('persistent-breakpoints')
+
+pbp.setup {
+    load_breakpoints_event = { "BufReadPost" }
+}
+
 local keymap = vim.keymap.set
-local env = '~/pyenv/versions/debugpy/bin/python'
-local env = '/Users/jeffor/.pyenv/versions/debugpy/bin/python'
+local home = os.getenv("HOME")
+local env = home .. '/.pyenv/versions/debugpy/bin/python'
+
+-- Python ==============================================================================
+
 dap.adapters.python = {
     type = 'executable';
     command = env;
@@ -10,22 +20,53 @@ dap.adapters.python = {
 
 dap.configurations.python = {
     {
-        -- The first three options are required by nvim-dap
-        type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
+        type = 'python';
         request = 'launch';
         name = "Launch file";
 
-        -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-        program = "${file}"; -- This configuration will launch the current file if used.
+        program = "${file}";
         pythonPath = function()
             return env
         end;
     },
 }
 
+-- Typescript ==========================================================================
+
+require("dap-vscode-js").setup({
+    debugger_path = home .. "/Documents/vscode-js-debug",
+    adapters = { 'pwa-node' },
+})
+
+for _, language in ipairs({ "typescript" }) do
+    dap.configurations[language] = {
+        {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+            sourceMaps = true,
+            protocol = "inspector",
+            console = "integratedTerminal",
+            outFiles = { "${workspaceFolder}/dist/**/*.js" },
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/dist/**/*.js",
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            },
+            runtimeExecutable = "ts-node",
+            skipFiles = { "<mode_internals>/**" },
+            preLaunchTask = "tsc: build - tsconfig.json"
+        }
+    }
+end
+
+-- Generic =============================================================================
+
 local function DebugMappingKeyBindings(state)
-    local opts = { noremap = true, silent = true }
-    if state == 1 then
+    local opts = { noremap = true, silent = true, buffer = true }
+    if state == "active" then
         local set = vim.keymap.set
         set("n", "c", "<cmd>lua require('dap').continue()<CR>", opts)
         set("n", "n", "<cmd>lua require('dap').step_over()<CR>", opts)
@@ -51,23 +92,29 @@ local function DebugMappingKeyBindings(state)
 
 end
 
--- pause = "",
--- play = "",
--- step_into = "",
--- step_over = "",
--- step_out = "",
--- step_back = "",
--- run_last = "↻",
--- terminate = "□",
+local opts = { noremap = true, silent = true }
 
-keymap("n", "<leader>b", "<cmd>lua require('dap').toggle_breakpoint()<CR>", {noremap= true, silent = true})
-vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint'})
-vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped'})
+keymap("n", "<leader>b", "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>", opts)
+keymap("n", "<leader>ba", "<cmd>lua require('persistent-breakpoints.api').clear_all_breakpoints()<CR>", opts)
+
+vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint' })
+vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped' })
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
-    DebugMappingKeyBindings(1)
-end
-dap.listeners.after.event_terminated["dapui_config"] = function()
-    DebugMappingKeyBindings(0)
+    dapui.open()
+    DebugMappingKeyBindings("active")
 end
 
+dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+end
+
+dap.listeners.after.event_terminated["dapui_config"] = function()
+    DebugMappingKeyBindings("inactive")
+end
+
+dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+end
+
+dapui.setup({})

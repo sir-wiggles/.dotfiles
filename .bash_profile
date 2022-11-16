@@ -1,3 +1,4 @@
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -17,11 +18,14 @@ export SHELL=/bin/bash
 export VISUAL=nvim
 export PYTHONDONTWRITEBYTECODE=1
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git" --glob "!snap/*"'
+export RIPGREP_CONFIG_PATH='~/.ripgreprc'
 
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
+
+# =====================================================================================
 
 
 # If not running interactively, don't do anything
@@ -36,7 +40,7 @@ export BASH_IT="/Users/jeffor/.bash_it"
 # Lock and Load a custom theme file.
 # Leave empty to disable theming.
 # location /.bash_it/themes/
-export BASH_IT_THEME='parrot'
+export BASH_IT_THEME='simple'
 
 # Some themes can show whether `sudo` has a current token or not.
 # Set `$THEME_CHECK_SUDO` to `true` to check every prompt:
@@ -108,3 +112,6 @@ export SCM_CHECK=true
 source "$BASH_IT"/bash_it.sh
 
 export PROMPT_COMMAND="${PROMPT_COMMAND/_pyenv_virtualenv_hook;/}"
+export PS1="\[\e[0;36m\](\[\e[0;32m\]$(_git-friendly-ref) ?:3 \[\e[0;31m\]✗\[\e[0;36m\])\[\e[39m\] \[\e[0;36m\]\W\[\e[39m\] $ "
+
+# source ~/.bashrc

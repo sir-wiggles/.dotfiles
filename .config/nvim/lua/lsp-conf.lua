@@ -10,8 +10,10 @@ local servers = {
                 analysis = {
                     autoSearchPaths = true,
                     diagnosticMode = "workspace",
-                    useLibraryCodeForTypes = true
-                }
+                    useLibraryCodeForTypes = true,
+                },
+                venvPath = "/Users/jeffor/.pyenv/versions", --"/richdata-api-service/bin/python",
+                venv = "richdata-api-service",
             }
         },
     },
@@ -38,70 +40,98 @@ local servers = {
     gopls = {
         settings = {}
     },
+    tsserver = {
+        settings = {}
+    },
+    graphql = {
+        settings = {}
+    },
 }
 
+
 local function handlers()
-    local diagnostics = { Error = " ", Hint = " ", Information = " ", Question = " ", Warning = " " }
-    local signs = {
-        { name = "DiagnosticSignError", text = diagnostics.Error },
-        { name = "DiagnosticSignWarn", text = diagnostics.Warning },
-        { name = "DiagnosticSignHint", text = diagnostics.Hint },
-        { name = "DiagnosticSignInfo", text = diagnostics.Info },
-    }
-    for _, sign in ipairs(signs) do
-        vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = sign.name })
+    local sign = function(opts)
+        vim.fn.sign_define(opts.name, {
+            texthl = opts.name,
+            text = opts.text,
+            numhl = ''
+        })
     end
 
-    local config = {
+    sign({ name = 'DiagnosticSignError', text = '✘' })
+    sign({ name = 'DiagnosticSignWarn', text = '▲' })
+    sign({ name = 'DiagnosticSignHint', text = '⚑' })
+    sign({ name = 'DiagnosticSignInfo', text = '' })
+
+    -- local diagnostics = { Error = " ", Hint = " ", Information = " ", Question = " ", Warning = " " }
+
+    vim.diagnostic.config({
+        virtual_text = false,
+        severity_sort = true,
         float = {
-            focusable = true,
-            style = "minimal",
-            border = "rounded",
+            border = 'rounded',
+            source = 'always',
+            header = '',
+            prefix = '',
         },
+    })
 
-        diagnostic = {
-            virtual_text = false, -- disable inline error text
-            signs = { active = signs },
-            underline = true,
-            update_in_insert = false,
-            severity_sort = true,
-            float = {
-                focusable = true,
-                style = "minimal",
-                border = "rounded",
-                source = "always",
-                header = "",
-                prefix = "",
-            },
-        },
+
+    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+        vim.lsp.handlers.hover,
+        { border = 'rounded' }
+    )
+
+    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+        vim.lsp.handlers.signature_help,
+        { border = 'rounded' }
+    )
+    require('lspconfig.ui.windows').default_options = {
+        border = 'rounded'
     }
-
-    vim.diagnostic.config(config.diagnostic)
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, config.float)
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, config.float)
 end
 
-local function on_attach(_, bufnr)
-    vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+-- Border = {
+--     { "╭", "FloatBorder" },
+--     { "─", "FloatBorder" },
+--     { "╮", "FloatBorder" },
+--     { "│", "FloatBorder" },
+--     { "╯", "FloatBorder" },
+--     { "─", "FloatBorder" },
+--     { "╰", "FloatBorder" },
+--     { "│", "FloatBorder" },
+-- }
 
-    local opts = { noremap = true, silent = true }
+vim.api.nvim_create_autocmd('LspAttach', {
+    desc = 'LSP actions',
+    callback = function()
 
-    keymap("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
-    keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-    keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-    keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
-    keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
+        local bufmap = function(mode, lhs, rhs)
+            local opts = { buffer = true }
+            vim.keymap.set(mode, lhs, rhs, opts)
+        end
 
-    keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-    keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+        vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
 
-    keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    keymap("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-    keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-    keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-    keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+        local opts = { noremap = true, silent = true }
 
-end
+        keymap("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
+        keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+        keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+        keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
+        keymap("n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
+
+        keymap("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+        keymap("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+
+        keymap("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
+        keymap("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
+        keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+        keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
+        keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+
+    end
+})
 
 local function omnifunc()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -142,22 +172,19 @@ exports.active = function()
     return "歷" .. table.concat(buf_client_names, ", ")
 end
 
+
 exports.setup = function()
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = false
+    local lspconfig = require("lspconfig")
 
     handlers()
     omnifunc()
 
     local opts = {
-        on_attach = on_attach,
-        capabilities = capabilities,
         flags = {
             debounce_text_changes = 150,
         },
     }
 
-    local lspconfig = require("lspconfig")
     for server_name, config in pairs(servers) do
         local extended_opts = vim.tbl_deep_extend("force", opts, config or {})
         lspconfig[server_name].setup(extended_opts)
