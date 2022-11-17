@@ -19,6 +19,7 @@ export VISUAL=nvim
 export PYTHONDONTWRITEBYTECODE=1
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git" --glob "!snap/*"'
 export RIPGREP_CONFIG_PATH='~/.ripgreprc'
+export PATH=$HOME/go/bin:$PATH
 
 
 bind '"\e[A": history-search-backward'
@@ -40,7 +41,7 @@ export BASH_IT="/Users/jeffor/.bash_it"
 # Lock and Load a custom theme file.
 # Leave empty to disable theming.
 # location /.bash_it/themes/
-export BASH_IT_THEME='simple'
+export BASH_IT_THEME='standard'
 
 # Some themes can show whether `sudo` has a current token or not.
 # Set `$THEME_CHECK_SUDO` to `true` to check every prompt:
@@ -111,7 +112,10 @@ export SCM_CHECK=true
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
 
-export PROMPT_COMMAND="${PROMPT_COMMAND/_pyenv_virtualenv_hook;/}"
-export PS1="\[\e[0;36m\](\[\e[0;32m\]$(_git-friendly-ref) ?:3 \[\e[0;31m\]✗\[\e[0;36m\])\[\e[39m\] \[\e[0;36m\]\W\[\e[39m\] $ "
-
 # source ~/.bashrc
+
+export PROMPT_COMMAND="${PROMPT_COMMAND/_pyenv_virtualenv_hook;/}"
+export PS1="\[\e[0;36m\]\w\[\e[39m\] $ "
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
