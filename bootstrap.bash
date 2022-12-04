@@ -6,19 +6,10 @@ sudo apt install -y make curl git tmux bat tree stow gnome-tweaks clang g++ xsel
 
 # =================== neovim ====================
 pushd /tmp
-curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-linux64.deb
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.deb
 sudo apt install ./nvim-linux64.deb
 popd
 
-# ==================== kitty ====================
-pushd /tmp
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
-ln -s ~/.local/kitty.app/bin/kitty ~/.local/bin/
-cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
-cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
-sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
-sed -i "s|Exec=kitty|Exec=/home/$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
-popd
 
 # ===================== fzf =====================
 pushd /tmp
@@ -34,9 +25,9 @@ popd
 
 # ===================== go ======================
 pushd /tmp
-curl -LO https://go.dev/dl/go1.19.linux-amd64.tar.gz
+curl -LO https://go.dev/dl/go1.19.3.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.19.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.19.3.linux-amd64.tar.gz
 popd
 
 # ==================== pyenv ====================
@@ -57,3 +48,11 @@ go install github.com/gsamokovarov/jump@latest
 
 # ===================== tpm =====================
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+
+# fonts
+pushd /tmp
+curl -L -O https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Agave.zip
+unzip -o Agave.zip -d ~/.local/share/fonts -x LICENSE *.md *Windows*
+fc-cache -f -v
+popd
