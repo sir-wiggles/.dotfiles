@@ -9,6 +9,7 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'kdheepak/lazygit.nvim'                                " lua
         Plug 'rhysd/git-messenger.vim'
         Plug 'APZelos/blamer.nvim'
+        Plug 'lewis6991/gitsigns.nvim'
 
     " === stat display
         Plug 'nvim-lualine/lualine.nvim'                            " lua
