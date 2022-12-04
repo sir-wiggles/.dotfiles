@@ -1,8 +1,9 @@
 -- must be set before plugins that deal with colors
 vim.api.nvim_set_option("termguicolors", true)
 
-require('cmp-conf').setup()
+require("cmp-conf").setup()
 require("lsp-conf").setup()
+require("git-conf")
 require("dap-conf")
 require("colorizer").setup()
 require("mason").setup({})
@@ -14,7 +15,8 @@ require("mini.indentscope").setup({})
 require("mini.jump").setup({})
 require("mini.surround").setup({})
 require("mini.tabline").setup({})
-require('telescope').setup({})
+require("telescope").setup({})
+require("gitsigns").setup({})
 
 -- ===========================================
 -- ====== nvim-treesitter configuration ======
@@ -32,12 +34,12 @@ require("nvim-treesitter.configs").setup({
 -- ===========================================
 -- ========== lualine configuration ==========
 -- ===========================================
--- this plugin must be called after mini.base16
 
 require("lualine").setup({
-    -- options = { theme = "gruvbox-material" },
+    options = { theme = "gruvbox" },
     sections = {
-        lualine_c = { "filename", require('lsp-conf').active }
+        -- lualine_b = { "diff" },
+        lualine_c = { "filename", require('lsp-conf').active },
     },
     extensions = { "quickfix", "man", "nvim-dap-ui" }
 })
