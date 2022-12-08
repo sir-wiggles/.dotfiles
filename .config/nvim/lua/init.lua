@@ -15,8 +15,16 @@ require("mini.indentscope").setup({})
 require("mini.jump").setup({})
 require("mini.surround").setup({})
 require("mini.tabline").setup({})
-require("telescope").setup({})
-require("gitsigns").setup({})
+require("nvim-tree").setup()
+require('telescope').setup({
+    defaults = {
+        layout_strategy = 'vertical',
+        layout_config = { height = 0.95 },
+    }
+})
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- ===========================================
 -- ====== nvim-treesitter configuration ======
@@ -28,6 +36,7 @@ require("nvim-treesitter.configs").setup({
         additional_vim_regex_highlighting = false,
     },
 })
+
 
 -- -------------------------------------------
 

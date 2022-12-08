@@ -2,15 +2,26 @@ local dap = require('dap')
 local dapui = require('dapui')
 local pbp = require('persistent-breakpoints')
 
-pbp.setup {
-    load_breakpoints_event = { "BufReadPost" }
-}
+pbp.setup({ load_breakpoints_event = { "BufReadPost" } })
 
-local keymap = vim.keymap.set
-local home = os.getenv("HOME")
-local env = home .. '/.pyenv/versions/debugpy/bin/python'
+-- require('dap').set_log_level('TRACE')
+
+-- Golang ==============================================================================
+
+require('dap-go').setup({
+    {
+        type = "go",
+        name = "Debug Package + Config",
+        request = "launch",
+        program = "${fileDirname}",
+        args = { "-l", "_infra/kustomize/overlays/config/common" },
+    }
+})
 
 -- Python ==============================================================================
+
+local home = os.getenv("HOME")
+local env = home .. '/.pyenv/versions/debugpy/bin/python'
 
 dap.adapters.python = {
     type = 'executable';
@@ -64,8 +75,10 @@ end
 
 -- Generic =============================================================================
 
+local keymap = vim.keymap.set
+
 local function DebugMappingKeyBindings(state)
-    local opts = { noremap = true, silent = true, buffer = true }
+    local opts = { noremap = true, silent = true, buffer = false }
     if state == "active" then
         local set = vim.keymap.set
         set("n", "c", "<cmd>lua require('dap').continue()<CR>", opts)
@@ -76,7 +89,7 @@ local function DebugMappingKeyBindings(state)
         set("n", "d", "<cmd>lua require('dap').down()<CR>", opts)
         set("n", "b", "<cmd>lua require('dap').toggle_breakpoint()<CR>", opts)
         set("n", "r", "<cmd>lua require('dap').repl.open()<CR>", opts)
-        -- vim.api.nvim_set_hl(0, 'Normal', {bg='#ffaf00'})
+        set("n", "q", "<cmd>lua require('dap').disconnect()<CR>", opts)
     else
         local del = vim.keymap.del
         del("n", "c", opts)
@@ -87,15 +100,16 @@ local function DebugMappingKeyBindings(state)
         del("n", "d", opts)
         del("n", "b", opts)
         del("n", "r", opts)
-        -- vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal', {bg='#3a3a3a'})
+        del("n", "q", opts)
     end
 
 end
 
 local opts = { noremap = true, silent = true }
 
-keymap("n", "<leader>b", "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>", opts)
+keymap("n", "<leader>b",  "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>", opts)
 keymap("n", "<leader>ba", "<cmd>lua require('persistent-breakpoints.api').clear_all_breakpoints()<CR>", opts)
+keymap("n", "<leader>q",  "<cmd>lua require('dapui').close()<cr>", opts)
 
 vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint' })
 vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped' })

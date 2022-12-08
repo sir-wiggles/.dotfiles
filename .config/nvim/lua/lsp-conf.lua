@@ -12,8 +12,7 @@ local servers = {
                     diagnosticMode = "workspace",
                     useLibraryCodeForTypes = true,
                 },
-                venvPath = "/Users/jeffor/.pyenv/versions", --"/richdata-api-service/bin/python",
-                venv = "richdata-api-service",
+                venvPath = "/Users/jeffor/Library/Caches/pypoetry/virtualenvs/",
             }
         },
     },
@@ -86,6 +85,9 @@ local function handlers()
         vim.lsp.handlers.signature_help,
         { border = 'rounded' }
     )
+
+    vim.lsp.handlers["textDocument/references"] = require("telescope.builtin").lsp_references
+
     require('lspconfig.ui.windows').default_options = {
         border = 'rounded'
     }
@@ -129,6 +131,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
         keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
         keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+        keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+
 
     end
 })

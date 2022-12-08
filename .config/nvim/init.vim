@@ -44,6 +44,7 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'rcarriga/nvim-dap-ui'                                 " lua
         Plug 'mxsdev/nvim-dap-vscode-js'                            " lua
         Plug 'Weissle/persistent-breakpoints.nvim'                  " lua
+        Plug 'sir-wiggles/nvim-dap-go'
 
     " === themes & colors
         " color codes to actual colors in vim
@@ -58,6 +59,8 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'ellisonleao/gruvbox.nvim'
 
     " === xplugs
+        Plug 'nvim-tree/nvim-tree.lua'
+        Plug 'famiu/bufdelete.nvim'
 
 call plug#end()
 
@@ -69,7 +72,7 @@ lua require('init')
 
 " theme
 let base16colorspace=256
-colorscheme melange
+colorscheme gruvbox
 
 " options
 " set clipboard+=unnamedplus
@@ -127,11 +130,15 @@ let g:startify_fortune_use_unicode=1
 let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
 let g:blamer_enabled = 1
 
+let g:poetv_executables = ['poetry']
+let g:poetv_statusline_symbol = ''
+let g:poetv_auto_activate = 0
+
 " editor
 inoremap jk <esc>
 inoremap JK <esc>
 nnoremap <leader>h :setlocal spell! spelllang=en_us<cr>
-nnoremap <c-w>     :nohlsearch<cr>
+nnoremap <leader>w :nohlsearch<cr>
 
 " resize buffers
 nnoremap <s-left>  :vertical resize -5<cr>
@@ -145,6 +152,9 @@ nnoremap <c-p> :Telescope fd<cr>
 nnoremap <leader>ff :execute 'Telescope find_files default_text=' . "'" . expand('<cword>')<cr>
 nnoremap <leader>fg :execute 'Telescope live_grep default_text=' . expand('<cword>')<cr>
 
+nnoremap <leader>fb :NvimTreeToggle<cr>
+nnoremap <c-b> :Bdelete<cr>
+
 " commands
 command! Git   :LazyGit
 command! Grep  :Telescope live_grep
@@ -155,6 +165,8 @@ command! Cmprc :e ~/.config/nvim/lua/cmp-conf.lua
 command! Daprc :e ~/.config/nvim/lua/dap-conf.lua
 command! Lsprc :e ~/.config/nvim/lua/lsp-conf.lua
 command! Source :source ~/.config/nvim/init.vim
+command! Venv  :PoetvActivate | LspRestart
+command! Fb    :NvimTreeToggle
 
 " autocmds
 " highlight the yanked text for a short period of time
