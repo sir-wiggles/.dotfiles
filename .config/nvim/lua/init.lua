@@ -3,7 +3,7 @@ vim.api.nvim_set_option("termguicolors", true)
 
 require("cmp-conf").setup()
 require("lsp-conf").setup()
-require("git-conf")
+--require("git-conf")
 require("dap-conf")
 require("colorizer").setup()
 require("mason").setup({})

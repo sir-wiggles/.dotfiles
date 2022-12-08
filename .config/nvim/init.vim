@@ -114,6 +114,10 @@ nnoremap <s-l> :bn<cr>
 nnoremap <s-h> :bp<cr>
 nnoremap <c-c> :bw<cr>
 
+" tabs
+nnoremap <c-[> gT
+nnoremap <c-]> gt
+
 " copy + paste
 vnoremap <leader>y  "+y
 nnoremap <leader>Y  "+yg_
