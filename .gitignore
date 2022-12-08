@@ -1,2 +1,3 @@
 .config/nvim/plugged/
 .local/share/fonts/.uuid
+.bash_profile
