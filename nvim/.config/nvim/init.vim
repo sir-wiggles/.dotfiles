@@ -144,6 +144,9 @@ inoremap JK <esc>
 nnoremap <leader>h :setlocal spell! spelllang=en_us<cr>
 nnoremap <leader>w :nohlsearch<cr>
 
+nnoremap <leader>e  :edit   <c-r>=expand("%:p:h") . "/" <cr>
+nnoremap <leader>es :vsplit <c-r>=expand("%:p:h") . "/" <cr>
+
 " resize buffers
 nnoremap <s-left>  :vertical resize -5<cr>
 nnoremap <s-right> :vertical resize +5<cr>
