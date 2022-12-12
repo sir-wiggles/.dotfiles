@@ -7,7 +7,11 @@ require("lsp-conf").setup()
 require("dap-conf")
 require("colorizer").setup()
 require("mason").setup({})
-require("mason-lspconfig").setup({})
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        "gopls", "sumneko_lua", "pyright", "vimls"
+    }
+})
 require("mini.bufremove").setup({})
 require("mini.comment").setup({})
 require("mini.cursorword").setup({})
