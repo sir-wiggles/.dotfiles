@@ -1,7 +1,5 @@
 #! /bin/bash
 set -e
 
-pushd /tmp
-curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.deb
-sudo apt install ./nvim-linux64.deb
-popd
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
