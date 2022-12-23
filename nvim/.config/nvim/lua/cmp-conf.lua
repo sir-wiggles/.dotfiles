@@ -1,6 +1,6 @@
 local cmp = require('cmp')
+local types = require("cmp.types")
 local luasnip = require('luasnip')
-
 local exports = {}
 
 require('luasnip.loaders.from_lua').lazy_load({
@@ -61,14 +61,20 @@ exports.setup = function()
             end
         },
         sources = {
+            { name = 'nvim_lsp' },
             { name = 'path' },
-            { name = 'nvim_lsp', keyword_length = 3 },
-            { name = 'buffer', keyword_length = 3 },
-            { name = 'luasnip', keyword_length = 2 },
+            { name = 'buffer', keyword_length = 0 },
+            { name = 'luasnip', keyword_length = 0 },
         },
         window = {
             documentation = cmp.config.window.bordered(),
             completion = cmp.config.window.bordered()
+        },
+        sorting = {
+            comparators = {
+                cmp.config.compare.sort_text,
+                cmp.config.compare.kind,
+            }
         },
         formatting = {
             fields = { 'menu', 'abbr', 'kind' },
@@ -80,38 +86,14 @@ exports.setup = function()
                     buffer = 'Ω',
                     path = '/',
                 }
-
                 item.menu = menu_icon[entry.source.name]
                 return item
             end,
         },
+        preselect = cmp.PreselectMode.None,
         mapping = {
-            ['<C-p>'] = cmp.mapping.select_prev_item(),
-            ['<C-n>'] = cmp.mapping.select_next_item(),
-
-            ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-            ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
-            ['<C-e>'] = cmp.mapping.abort(),
-            ['<CR>'] = cmp.mapping.confirm({ select = false }),
-
-            ['<C-]>'] = cmp.mapping(function(fallback)
-                if luasnip.jumpable(1) then
-                    luasnip.jump(1)
-                else
-                    fallback()
-                end
-            end, { 'i', 's' }),
-
-            ['<C-[>'] = cmp.mapping(function(fallback)
-                if luasnip.jumpable(-1) then
-                    luasnip.jump(-1)
-                else
-                    fallback()
-                end
-            end, { 'i', 's' }),
-
-            ["<Tab>"] = cmp.mapping(function(fallback)
+            ['<cr>'] = cmp.mapping.confirm({ select = true }),
+            ["<tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
                 elseif luasnip.expand_or_jumpable() then
@@ -122,8 +104,7 @@ exports.setup = function()
                     fallback()
                 end
             end, { "i", "s" }),
-
-            ["<S-Tab>"] = cmp.mapping(function(fallback)
+            ["<s-tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item()
                 elseif luasnip.jumpable(-1) then
@@ -132,6 +113,25 @@ exports.setup = function()
                     fallback()
                 end
             end, { "i", "s" }),
+            ['<c-p>'] = cmp.mapping.select_prev_item(),
+            ['<c-n>'] = cmp.mapping.select_next_item(),
+            ['<c-u>'] = cmp.mapping.scroll_docs(-4),
+            ['<c-f>'] = cmp.mapping.scroll_docs(4),
+            ['<c-e>'] = cmp.mapping.abort(),
+            ['<c-]>'] = cmp.mapping(function(fallback)
+                if luasnip.jumpable(1) then
+                    luasnip.jump(1)
+                else
+                    fallback()
+                end
+            end, { 'i', 's' }),
+            ['<C-[>'] = cmp.mapping(function(fallback)
+                if luasnip.jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
+                end
+            end, { 'i', 's' }),
         },
     })
 end
