@@ -3,6 +3,9 @@ local api = vim.api
 
 local exports = {}
 
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 local servers = {
     pyright = {
         settings = {
@@ -28,6 +31,7 @@ local servers = {
                 },
                 workspace = {
                     library = api.nvim_get_runtime_file("", true),
+                    checkThirdParty = false,
                 },
                 telemetry = { enable = false },
             },
@@ -37,7 +41,21 @@ local servers = {
         settings = {}
     },
     gopls = {
-        settings = {}
+        capabilities = capabilities,
+        settings = {
+            gopls = {
+                experimentalPostfixCompletions = true,
+                analyses = {
+                    unusedparams = true,
+                    shadow = true,
+                },
+                gofumpt = true,
+                staticcheck = true,
+            },
+        },
+        init_options = {
+            usePlaceholders = true,
+        }
     },
     tsserver = {
         settings = {}
@@ -93,31 +111,14 @@ local function handlers()
     }
 end
 
--- Border = {
---     { "╭", "FloatBorder" },
---     { "─", "FloatBorder" },
---     { "╮", "FloatBorder" },
---     { "│", "FloatBorder" },
---     { "╯", "FloatBorder" },
---     { "─", "FloatBorder" },
---     { "╰", "FloatBorder" },
---     { "│", "FloatBorder" },
--- }
-
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function()
-
-        local bufmap = function(mode, lhs, rhs)
-            local opts = { buffer = true }
-            vim.keymap.set(mode, lhs, rhs, opts)
-        end
-
         vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
 
         local opts = { noremap = true, silent = true }
 
-        keymap("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
+        keymap("n", "K", vim.lsp.buf.hover, opts)
         keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
         keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
         keymap("n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.ERROR})<CR>", opts)
@@ -132,8 +133,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
         keymap("n", "gb", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
         keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-
-
     end
 })
 
@@ -148,9 +147,12 @@ local function omnifunc()
     keymap("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], expr_opts)
 end
 
-function go_org_imports(wait_ms)
+function GoImports(wait_ms)
     local params = vim.lsp.util.make_range_params()
+
     params.context = { only = { "source.organizeImports" } }
+    params.context = { source = { organizeImports = true } }
+
     local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
     for cid, res in pairs(result or {}) do
         for _, r in pairs(res.result or {}) do
@@ -162,7 +164,7 @@ function go_org_imports(wait_ms)
     end
 end
 
-vim.cmd([[ autocmd BufWritePre *.go lua go_org_imports() ]])
+vim.cmd([[ autocmd BufWritePre *.go lua GoImports() ]])
 
 exports.active = function()
     local buf_clients = vim.lsp.buf_get_clients()

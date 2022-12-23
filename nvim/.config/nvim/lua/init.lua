@@ -3,15 +3,10 @@ vim.api.nvim_set_option("termguicolors", true)
 
 require("cmp-conf").setup()
 require("lsp-conf").setup()
---require("git-conf")
 require("dap-conf")
 require("colorizer").setup()
 require("mason").setup({})
-require("mason-lspconfig").setup({
-    ensure_installed = {
-        "gopls", "sumneko_lua", "pyright", "vimls"
-    }
-})
+require("mason-lspconfig").setup({})
 require("mini.bufremove").setup({})
 require("mini.comment").setup({})
 require("mini.cursorword").setup({})
@@ -27,9 +22,6 @@ require('telescope').setup({
     }
 })
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- ===========================================
 -- ====== nvim-treesitter configuration ======
 -- ===========================================
@@ -41,15 +33,11 @@ require("nvim-treesitter.configs").setup({
     },
 })
 
-
--- -------------------------------------------
-
 -- ===========================================
 -- ========== lualine configuration ==========
 -- ===========================================
-
 require("lualine").setup({
-    options = { theme = "gruvbox" },
+    options = { theme = "powerline" },
     sections = {
         -- lualine_b = { "diff" },
         lualine_c = { "filename", require('lsp-conf').active },
